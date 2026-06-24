@@ -7,6 +7,8 @@ import org.springframework.ai.openai.OpenAiChatModel;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
  * @ClassName CommonConfig
@@ -16,7 +18,17 @@ import org.springframework.context.annotation.Configuration;
  */
 
 @Configuration
-public class CommonConfiguration {
+public class CommonConfiguration implements WebMvcConfigurer {
+
+    //跨域：允许所有来源的请求
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**")
+                .allowedOrigins("*")  // 允许所有来源，开发环境使用
+                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                .allowedHeaders("*")
+                .maxAge(3600);
+    }
 
 
     @Bean("ollamaChatClient")
