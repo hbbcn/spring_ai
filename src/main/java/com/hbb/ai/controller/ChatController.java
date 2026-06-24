@@ -5,6 +5,7 @@ import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -36,6 +37,7 @@ public class ChatController {
      @GetMapping(value = "/chat", produces = MediaType.TEXT_EVENT_STREAM_VALUE + ";charset=UTF-8")
 //    @RequestMapping(value = "/chat", produces = "text/html;charset=UTF-8")
     //prompt:提示语
+     @CrossOrigin
     public Flux<String> ask(String prompt) {
         return openAiChatClient.prompt()
                 .user(prompt)

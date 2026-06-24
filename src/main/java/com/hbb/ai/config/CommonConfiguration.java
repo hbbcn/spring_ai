@@ -21,14 +21,14 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class CommonConfiguration implements WebMvcConfigurer {
 
     //跨域：允许所有来源的请求
-    @Override
-    public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**")
-                .allowedOrigins("*")  // 允许所有来源，开发环境使用
-                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
-                .allowedHeaders("*")
-                .maxAge(3600);
-    }
+//    @Override
+//    public void addCorsMappings(CorsRegistry registry) {
+//        registry.addMapping("/**")
+//                .allowedOrigins("*")  // 允许所有来源，开发环境使用
+//                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+//                .allowedHeaders("*")
+//                .maxAge(3600);
+//    }
 
 
     @Bean("ollamaChatClient")
