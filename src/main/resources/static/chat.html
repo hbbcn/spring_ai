@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>AI 聊天测试</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        #input-area {
+            margin-bottom: 20px;
+        }
+        #prompt {
+            width: 70%;
+            padding: 10px;
+            font-size: 16px;
+        }
+        #send-btn {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        #response {
+            border: 1px solid #ccc;
+            padding: 15px;
+            min-height: 200px;
+            background-color: #f9f9f9;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        .loading {
+            color: #666;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <h1>AI 聊天测试</h1>
+    
+    <div id="input-area">
+        <input type="text" id="prompt" placeholder="输入你的问题..." value="你好，请用中文介绍一下自己">
+        <button id="send-btn">发送</button>
+    </div>
+    
+    <div id="response"></div>
+
+    <script>
+        const responseDiv = document.getElementById('response');
+        const promptInput = document.getElementById('prompt');
+        const sendBtn = document.getElementById('send-btn');
+        let eventSource = null;
+
+        sendBtn.addEventListener('click', function() {
+            const prompt = promptInput.value.trim();
+            if (!prompt) {
+                alert('请输入问题');
+                return;
+            }
+
+            // 关闭之前的连接
+            if (eventSource) {
+                eventSource.close();
+            }
+
+            // 清空之前的响应
+            responseDiv.innerHTML = '<span class="loading">正在生成回答...</span>';
+
+            // 创建新的 EventSource 连接
+            eventSource = new EventSource('http://localhost:8080/ai/chat?prompt=' + encodeURIComponent(prompt));
+
+            eventSource.onmessage = function(event) {
+                // 追加新内容
+                if (responseDiv.querySelector('.loading')) {
+                    responseDiv.innerHTML = '';
+                }
+                responseDiv.textContent += event.data;
+            };
+
+            eventSource.onerror = function(error) {
+                console.error('SSE 错误:', error);
+                eventSource.close();
+                if (responseDiv.textContent === '') {
+                    responseDiv.innerHTML = '<span style="color: red;">连接错误，请重试</span>';
+                }
+            };
+
+            eventSource.addEventListener('error', function(e) {
+                console.log('Stream completed');
+                eventSource.close();
+            });
+        });
+
+        // 支持回车发送
+        promptInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendBtn.click();
+            }
+        });
+    </script>
+</body>
+</html>

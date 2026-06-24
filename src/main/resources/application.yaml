@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: heima_ai
+  ai:
+    openai:
+      api-key: sk-ws-H.RYHMYEP.hmGp.MEUCIQDd-C7X2CxJbxXccwjt_YH1y7AMe2y4DR4xlD80gaSm-QIgewRMS4advQkhkDvSkifS-9oK2w7BrXNIkj20jdLyOMU
+      base-url: https://llm-qdaqtp0tqywlgmjz.cn-beijing.maas.aliyuncs.com/compatible-mode/v1
+      chat:
+        model: qwen-plus
+    ollama:
+      chat:
+        model: "llama:7b"
+      base-url: http://localhost:11434
+logging:
+  level:
+    org.springframework.ai.chat.client.advisor: debug
+    com.heima: debug
