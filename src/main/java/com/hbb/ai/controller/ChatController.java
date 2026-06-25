@@ -1,6 +1,7 @@
 package com.hbb.ai.controller;
 
 import com.hbb.ai.repository.ChatHistoryRepository;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.SimpleLoggerAdvisor;
@@ -23,6 +24,7 @@ import reactor.core.publisher.Flux;
 @RestController
 @RequestMapping("/ai")
 @CrossOrigin
+@Tag(name = "演示controller", description = "演示controller")
 public class ChatController {
     //由于使用了 @Qualifier，你需要将 @RequiredArgsConstructor 改为手动构造方法
 // 或使用 @Autowired，因为 Lombok 的 @RequiredArgsConstructor 不支持 @Qualifier。

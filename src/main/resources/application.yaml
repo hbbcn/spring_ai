@@ -11,7 +11,30 @@ spring:
       chat:
         model: "llama:7b"
       base-url: http://localhost:11434
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/it_heima?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&allowPublicKeyRetrieval=true&useSSL=false
+    username: root
+    password: root
 logging:
   level:
     org.springframework.ai.chat.client.advisor: debug
     com.heima: debug
+# application.yml
+springdoc:
+  # SpringDoc的API包扫描路径，如果不配置，SpringDoc ​自动扫描整个项目类路径，它会自动识别所有 @RestController、@RequestMapping 等注解，生成 API 文档
+  packages-to-scan: com.hbb.ai
+  swagger-ui:
+    # 是否开启swagger界面，依赖OpenApi，默认为true，如果要开启需要OpenApi同时开启
+    enabled: true
+    # 内置 Swagger UI 的访问路径，默认值为/swagger-ui/index.html
+    path: /swagger-ui/index.html
+    # 指定OpenAPI文档的URL（注意这里一定要与api-docs.path保持一致，否则会请求失败）
+    url: /v3/api-docs
+    # 是否禁用Swagger UI自带的示例接口（如 Petstore 等默认接口），默认值为false，仅展示当前项目的 API
+    disable-swagger-default-url: false
+  api-docs:
+    # 是否启用OpenAPI文档端点，默认为true
+    enabled: true
+    # OpenAPI 3规范的文档访问路径，默认值为/v3/api-docs
+    path: /v3/api-docs

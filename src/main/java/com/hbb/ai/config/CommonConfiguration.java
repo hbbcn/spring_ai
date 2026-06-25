@@ -1,5 +1,6 @@
 package com.hbb.ai.config;
 
+import com.hbb.ai.constants.SystemConstants;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
 import org.springframework.ai.chat.client.advisor.SimpleLoggerAdvisor;
@@ -67,7 +68,7 @@ public class CommonConfiguration implements WebMvcConfigurer {
                         // 使用默认的会话记忆功能
                         MessageChatMemoryAdvisor.builder(chatMemory).build()
                 )
-                .defaultSystem("你是一个小团团")
+                .defaultSystem(SystemConstants.GAME_SYSTEM_PROMPT)
                 .build();
     }
 
