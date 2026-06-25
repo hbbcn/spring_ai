@@ -1,7 +1,11 @@
 package com.hbb.ai.config;
 
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
 import org.springframework.ai.chat.client.advisor.SimpleLoggerAdvisor;
+import org.springframework.ai.chat.memory.ChatMemory;
+import org.springframework.ai.chat.memory.InMemoryChatMemoryRepository;
+import org.springframework.ai.chat.memory.MessageWindowChatMemory;
 import org.springframework.ai.ollama.OllamaChatModel;
 import org.springframework.ai.openai.OpenAiChatModel;
 import org.springframework.beans.factory.annotation.Value;
@@ -9,6 +13,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import reactor.core.scheduler.Schedulers;
 
 /**
  * @ClassName CommonConfig
@@ -21,15 +26,22 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class CommonConfiguration implements WebMvcConfigurer {
 
     //跨域：允许所有来源的请求
-//    @Override
-//    public void addCorsMappings(CorsRegistry registry) {
-//        registry.addMapping("/**")
-//                .allowedOrigins("*")  // 允许所有来源，开发环境使用
-//                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
-//                .allowedHeaders("*")
-//                .maxAge(3600);
-//    }
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**")
+                .allowedOrigins("*")  // 允许所有来源，开发环境使用
+                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                .allowedHeaders("*")
+                .maxAge(3600);
+    }
 
+    @Bean
+    public ChatMemory chatMemory() {
+        return MessageWindowChatMemory.builder()
+                .chatMemoryRepository(new InMemoryChatMemoryRepository())
+                .maxMessages(20)  // 默认保留最近20条消息（约10轮对话）
+                .build();
+    }
 
     @Bean("ollamaChatClient")
     public ChatClient chatClient(OllamaChatModel ollamaChatModel) {
@@ -41,10 +53,20 @@ public class CommonConfiguration implements WebMvcConfigurer {
                 .build();
     }
 
+    // 使用 OpenAI 模型
+    //实现会话记忆功能
     @Bean("openAiChatClient")
-    public ChatClient openAiChatClient(OpenAiChatModel openAiChatModel) {
+    public ChatClient openAiChatClient(OpenAiChatModel openAiChatModel, ChatMemory chatMemory) {
         return ChatClient.builder(openAiChatModel)
-                .defaultAdvisors(new SimpleLoggerAdvisor())
+                .defaultAdvisors(
+                        new SimpleLoggerAdvisor(),
+//                        MessageChatMemoryAdvisor.builder(chatMemory)
+//                                .order(0)                              // int：Advisor 执行顺序
+//                                .scheduler(Schedulers.boundedElastic()) // Scheduler：异步调度器                Update available! Run: winget upgrade Anthropic.ClaudeCode
+//                                .build()
+                        // 使用默认的会话记忆功能
+                        MessageChatMemoryAdvisor.builder(chatMemory).build()
+                )
                 .defaultSystem("你是一个小团团")
                 .build();
     }
