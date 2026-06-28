@@ -3,10 +3,16 @@ spring:
     name: heima_ai
   ai:
     openai:
-      api-key: sk-ws-H.RYHMYEP.hmGp.MEUCIQDd-C7X2CxJbxXccwjt_YH1y7AMe2y4DR4xlD80gaSm-QIgewRMS4advQkhkDvSkifS-9oK2w7BrXNIkj20jdLyOMU
+#      api-key: sk-ws-H.RYHMYEP.hmGp.MEUCIQDd-C7X2CxJbxXccwjt_YH1y7AMe2y4DR4xlD80gaSm-QIgewRMS4advQkhkDvSkifS-9oK2w7BrXNIkj20jdLyOMU
+      api-key: sk-ws-H.RYPLXRE.wtxt.MEQCIDaGdLllS5wuaM_uREUqo3Ik9a0KSLzSIUZI1Oz5nB6NAiATEOE8ouelXh5rJ9U1-Z0i6ieYSnfkinOYk5Ec4tHtWA
+#      base-url: https://llm-qdaqtp0tqywlgmjz.cn-beijing.maas.aliyuncs.com/compatible-mode/v1
       base-url: https://llm-qdaqtp0tqywlgmjz.cn-beijing.maas.aliyuncs.com/compatible-mode/v1
       chat:
-        model: qwen-plus
+        model: qwen3.5-plus-2026-04-20 # 模型名称
+        temperature: 0.7 #  模型温度，值越大，输出结果越随机
+      embedding:
+        model: text-embedding-v3
+        dimensions: 1024
     ollama:
       chat:
         model: "llama:7b"
@@ -18,7 +24,7 @@ spring:
     password: root
 logging:
   level:
-    org.springframework.ai.chat.client.advisor: debug
+    org.springframework.ai: debug
     com.heima: debug
 # application.yml
 springdoc:
@@ -38,3 +44,13 @@ springdoc:
     enabled: true
     # OpenAPI 3规范的文档访问路径，默认值为/v3/api-docs
     path: /v3/api-docs
+
+##配置mybatis规则
+mybatis-plus:
+  #  config-location: classpath:mybatis/mybatis-config.xml
+  mapper-locations: classpath:mybatis/mapper/*.xml
+  configuration:
+    #开启驼峰命名
+    map-underscore-to-camel-case: true
+    #    打印mybatis sql日志
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl

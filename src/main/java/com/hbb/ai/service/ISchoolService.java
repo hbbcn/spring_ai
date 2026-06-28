@@ -13,4 +13,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface ISchoolService extends IService<School> {
 
+    public static void main(String[] args) {
+
+    }
 }
