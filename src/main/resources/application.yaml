@@ -17,6 +17,10 @@ spring:
       chat:
         model: "llama:7b"
       base-url: http://localhost:11434
+    #既然你已经手动创建了 SimpleVectorStore，应该关闭 Redis Vector Store 的自动配置
+    vectorstore:
+      redis:
+        enabled: false
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/it_heima?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&allowPublicKeyRetrieval=true&useSSL=false

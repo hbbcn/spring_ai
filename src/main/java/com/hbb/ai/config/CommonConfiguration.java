@@ -9,31 +9,20 @@ import org.springframework.ai.chat.client.advisor.SimpleLoggerAdvisor;
 import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.ai.chat.memory.InMemoryChatMemoryRepository;
 import org.springframework.ai.chat.memory.MessageWindowChatMemory;
-import org.springframework.ai.chat.observation.ChatModelObservationConvention;
-import org.springframework.ai.model.SimpleApiKey;
-import org.springframework.ai.model.openai.autoconfigure.OpenAiChatProperties;
-import org.springframework.ai.model.tool.ToolCallingManager;
+
 import org.springframework.ai.ollama.OllamaChatModel;
 import org.springframework.ai.openai.OpenAiChatModel;
-import org.springframework.beans.factory.ObjectProvider;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.ai.openai.OpenAiEmbeddingModel;
+import org.springframework.ai.vectorstore.SimpleVectorStore;
+import org.springframework.ai.vectorstore.VectorStore;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.retry.RetryTemplate;
-import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
-import org.springframework.web.client.ResponseErrorHandler;
-import org.springframework.web.client.RestClient;
-import org.springframework.web.reactive.function.client.WebClient;
+
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import reactor.core.scheduler.Schedulers;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 
 /**
  * @ClassName CommonConfig
@@ -45,6 +34,12 @@ import java.util.Objects;
 @Configuration
 public class CommonConfiguration implements WebMvcConfigurer {
 
+
+    @Bean
+    public VectorStore vectorStore(OpenAiEmbeddingModel openAiEmbeddingModel){
+        return SimpleVectorStore.builder(openAiEmbeddingModel)
+                .build();
+    }
 
     //跨域：允许所有来源的请求
     @Override
