@@ -72,6 +72,7 @@ public class LocalPdfFileRepository implements FileRepository {
         try {
             chatFiles.store(new FileWriter("chat-pdf.properties"), LocalDateTime.now().toString());
             SimpleVectorStore simpleVectorStore = (SimpleVectorStore) vectorStore;
+            System.out.println(simpleVectorStore);
             simpleVectorStore.save(new File("chat-pdf.json"));
         } catch (IOException e) {
             throw new RuntimeException(e);

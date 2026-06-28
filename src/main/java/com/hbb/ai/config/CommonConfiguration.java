@@ -13,6 +13,8 @@ import org.springframework.ai.chat.memory.MessageWindowChatMemory;
 import org.springframework.ai.ollama.OllamaChatModel;
 import org.springframework.ai.openai.OpenAiChatModel;
 import org.springframework.ai.openai.OpenAiEmbeddingModel;
+import org.springframework.ai.chat.client.advisor.vectorstore.QuestionAnswerAdvisor;
+import org.springframework.ai.vectorstore.SearchRequest;
 import org.springframework.ai.vectorstore.SimpleVectorStore;
 import org.springframework.ai.vectorstore.VectorStore;
 
@@ -88,6 +90,13 @@ public class CommonConfiguration implements WebMvcConfigurer {
     }
 
 
+    /**
+     * 创建一个服务端模型
+     * @param openAiChatModel 模型
+     * @param chatMemory 会话记忆
+     * @param courseTools  课程工具
+     * @return
+     */
     @Bean
     public ChatClient serviceChatClient(OpenAiChatModel openAiChatModel, ChatMemory chatMemory, CourseTools courseTools) {
         return ChatClient.builder(openAiChatModel)
@@ -97,6 +106,23 @@ public class CommonConfiguration implements WebMvcConfigurer {
                 )
                 .defaultSystem(SystemConstants.SERVICE_SYSTEM_PROMPT)
                 .defaultTools(courseTools)
+                .build();
+    }
+
+    @Bean
+    public ChatClient pdfChatClient(OpenAiChatModel chatModel, ChatMemory chatMemory, VectorStore vectorStore) {
+        return ChatClient.builder(chatModel)
+                .defaultSystem("请根据上下文回答，遇到上下文没有的问题，不要随意编造")
+                .defaultAdvisors(
+                        new SimpleLoggerAdvisor(),
+                        MessageChatMemoryAdvisor.builder(chatMemory).build(),
+                        QuestionAnswerAdvisor.builder(vectorStore)
+                                .searchRequest(SearchRequest.builder()
+                                                .similarityThreshold(0.6)
+                                                        .topK(2)
+                                        .build())
+                                .build()
+                )
                 .build();
     }
 
